@@ -1,109 +1,154 @@
-## CS 4346 — Project #2 (Fall 2025)
-
-**Due Date:** November 12, 2025
-
-### Overview
-
-This project requires you to implement the MINIMAX-A-B algorithm to build a Tic‑Tac‑Toe game-playing program (Max vs Min). Each team (up to 3 students) will implement the core Minimax with alpha–beta pruning algorithm and develop evaluation functions to compare performance.
-
-Teams must email their member names to the instructor promptly. (Note in original instructions: -5 points if not received by October 22.)
-
-### Team & Language
-
-- Team size: up to 3 students.
-- Preferred languages: C or C++ (discuss with instructor if you want to use another language).
-
-### Project Requirements (high-level)
-
-1. Implement the MINIMAX-A-B algorithm as described in the project specification.
-2. Implement one baseline evaluation function (class example) plus additional evaluation functions — one different function per team member (so a team of 3 provides 4 evaluation functions total: baseline + 3 member functions).
-3. Run head-to-head experiments: run Minimax-A-B with the evaluation functions in the combinations listed below, collect metrics, and analyze results.
-
-### Experimental runs
-
-Run the following 6 pairings (Max vs Min) to evaluate the relative performance of evaluation functions:
-
-- EV#1 vs EV#2
-- EV#1 vs EV#3
-- EV#1 vs EV#4
-- EV#2 vs EV#3
-- EV#2 vs EV#4
-- EV#3 vs EV#4
-
-For each run collect and tabulate:
-
-- total nodes generated
-- total nodes expanded
-- execution time
-- memory usage (approximate)
-- winning/losing/draw statistics
-
-Analyze the aggregated results and explain which evaluation functions perform better and why.
-
-### What to measure and report (per student)
-
-Each team member must individually perform steps 5-1 and 5-2 from the spec. That includes:
-
-- Running and recording the program outputs for the required pairings.
-- Tabulating metrics listed above for each run.
-- Writing an individual section in the report with analysis, conclusions, and observations.
-
-### Algorithm (summary)
-
-Implement MINIMAX-A-B with the usual recursive structure and alpha–beta thresholds (Use-Thresh and Pass-Thresh). If the recursion has reached a depth limit or a terminal state, return the static evaluation for the current player. Otherwise generate successors and apply the pruning logic described in the project description.
-
-(The original project description contains the full pseudocode to follow — include it in the report as needed.)
-
-### Report format (required)
-
-Your project report must follow the format below (include everything in the report — no separate attachments):
-
-- Title Page (title, full names, team member names, submission date)
-- Problem Description
-- Domain explanation
-- Methodologies (detailed description of MINIMAX-A-B and any design choices)
-- Source code implementation details and explanations
-- Full copy of source code included inside the report (not as an attachment)
-- Program runs and tabulated results for the six experiments
-- Analysis of the program (features added/modified)
-- Analysis of the results (interpretation of metrics)
-- Conclusion (what you learned)
-- Team members’ contributions (detailed per-person)
-- References
-
-Rubric details (length/points) were provided in the original assignment — make sure to follow them.
-
-### Submission instructions
-
-- Upload the project report to Canvas (Project #2 assignment). The report must be self-contained (do not send email). Failure to follow the Canvas upload procedure may result in a large point deduction.
-- Upload source code and any additional files required to run your program on Canvas as separate files. File naming convention for source files: `Project2-<studentID>.cpp` (or similar — keep naming consistent per instructions).
-
-Canvas submission steps (summary):
-
-1. Login to Canvas → Course: CS 4346 Fall 2025
-2. Assignments → Project #2 → Submit Assignment
-3. Choose and upload files (one by one)
-4. Agree to any EULA and click Submit
-
-### Academic integrity
-
-Each student must perform steps 5-1 and 5-2 individually. Do not copy programs or reports from others. Plagiarism or copying will be penalized.
-
-### Quick checklist for deliverables
-
-- Project report (complete, self-contained) — uploaded to Canvas
-- Source code files and related resources — uploaded to Canvas
-- Readme file with run instructions included in the upload
-
-### Instructor / Contact
-
-Dr. Ali (see course materials for office/demo details).
-
----
-
-If you want, I can:
-
-- shorten the README further into a one-page summary for your repo root,
-- or keep and include the full pseudocode and rubric as appendices inside the README.
-
-Tell me which option you prefer or if you want extra sections (examples, run commands, sample outputs) added.
+CS 4346: Artificial Intelligence-Fall 2025
+Project #2
+Due Date: November 12, 2025
+1. Form a team of a maximum of three students. Please email the names of your team members to
+me very soon. -5 points if I do not get it by October 22.
+2. Develop programs by implementing algorithms MINMAX-A-B (PowerPoint slide in SCP #6 as
+well as given at the end of this project description) in C or C++ language. You can use any AI tools,
+but the source code must be based on the algorithms MINMAX-A-B. Discuss with the instructor
+if you wish to use any other programming language.
+3. Develop and run your source code to play the Tic-Tac-Toe game in your project #2 Use the
+evaluation function discussed in the class as well as create additional evaluation functions (One
+function per team member). Four evaluation functions for the team of three team members.
+4. You will be running both programs on Computer (one for Max and one for Min) against each
+other. To evaluate the performance of each evaluation function, you will be running your
+programs six times for all the four evaluation functions, as indicated below:
+o Max (Running MinMax A-B with EV#1) verses Min (Running MinMax A-B with EV #2)
+o Max (Running MinMax A-B with EV#1) verses Min (Running MinMax A-B with EV #3)
+o Max (Running MinMax A-B with EV#1) verses Min (Running MinMax A-B with EV #4)
+o Max (Running MinMax A-B with EV#2) verses Min (Running MinMax A-B with EV #3)
+o Max (Running MinMax A-B with EV#2) verses Min (Running MinMax A-B with EV #4)
+o Max (Running MinMax A-B with EV#3) verses Min (Running MinMax A-B with EV #4)
+5. You are expected to develop the program as a team. After the program is developed and tested with
+the evaluation functions, each member of the team will work separately to do the following sections
+5-1 and 5-2:
+5-1. Execute your programs with these combinations which will let you analyze the performance of each
+evaluation function by tabulating the total number of nodes generated, total number of nodes
+expanded, execution time, the size of memory used by the program, and winning/losing
+statistics.
+For example: Comparing the total number of nodes generated and expanded,
+execution time, the size of memory used by the program, and winning/losing
+statistics of the run Max (Running MinMax A-B with EV#1) versus the total
+number of nodes generated and expanded, execution time, the size of memory
+used by the program, and winning/losing statistics of the run Min (Running
+MinMax A-B with EV #2) will let you compare the performance of the
+Evaluation function #1 versus the Evaluation function #2. In the Analysis of
+Results section, Analyze the tabulated results of all combinations and determine
+which evaluation functions are better. Write the conclusions you draw from these
+analyses.
+2
+5-2. Write the project report which must be in the required format and must include each team member's
+contributions, detailed descriptions of the problem, domain, methodologies, the source code
+implementations, source code, run time results, analysis of the program, and the analysis of results.
+Program Runs: For each run, show the initial state, intermediate states as they are generated, the final
+state when it is reached, and finally, the path generated by your program. Note that writing an efficient
+and working program is only one-half of the project. The other half of the project is to present it in the
+best possible understandable form in the report as well as in the demo.
+PROJECT DEMO: The requested teams will demonstrate the performance of the program in Dr. Ali’s
+office,
+Warning: EACH STUDENT MUST PERFORM STEPS 5-1 TO 5-2 INDIVIDUALLY. DO NOT
+COPY PROGRAMS FROM ANY SOURCE. ALSO, DO NOT COPY THE REPORT FROM
+YOUR PARTNER OR ANY OTHER PERSON.
+Project Submission Instructions
+REPORT SUBMISSION:
+• Upload your project report on CANVAS as a files. You cannot use attachments,
+everything should be in the report. [ABSOLUTELY NO EMAILS; Minus 50 points
+for email submissions] and make sure it can be downloaded easily.
+• Also, upload a Readme file containing detailed instructions on how to run your program.
+Check if the instructions work.
+SOURCE CODE and related files SUBMISSION:
+Besides including the source code in the report, you should also upload source code files as well
+as other files needed to run your program and verify your results. The source code file naming
+convention must be: Project2-student ID.cpp; The Naming convention of other files will be
+similar except for the file extensions.
+The file uploading instructions are given below:
+Login to CANVAS
+Access CS 4346 Fall 2025 course, then follow the following steps:
+• Click on [Assignments].
+• Select Project #2
+• Click on ‘Submit Assignment’
+• Choose your Files one by one, and UPLOAD them
+• Agree to the tool’s End-User License Agreement
+• Click on ‘Submit Assignment’
+3
+Algorithms to be Used in the Source Code.
+MINIMAX-A-B (CURRENT),0, PLAYER-ONE, Maximum value STATIC can
+compute, Minimum value STATIC can compute)
+These initial values for Use-Thresh and Pass-Thresh represent the worst
+values that each side could achieve.
+Algorithm: MINIMAX-A-B (Position, Depth, Player, Use-Thresh, Pass
+Thresh)
+1. If DEEF-ENOUGH(Position, Depth) then return the structure
+VALUE= STATIC (Position, Player);
+PATH=nil
+2. Otherwise, generate one more ply of the tree by calling the function
+MOVE-GEN (Position, Player) and setting SUCCESSORS to the list it returns.
+3. If SUCCESSORS is empty, there are no moves to be made: return the same
+structure that would have been returned if DEEP-ENOUGH had returned TRUE.
+4. If SUCCESSORS is not empty, then go through it, examining each element
+and keeping track of the best one. This is done as follows,
+For each element SUCC of SUCCESSORS:
+(a) Set RESULT-SUCC to
+MINIMAX-A-B (SUCC, Depth+ 1, OPPOSITE (Player), -Pass-Thresh,-Use
+-Thresh).
+(b) Set NEW-VALUE to -VALUE (RESULT-SUCC).
+(c) If NEW-VALUE> Pass-Thresh, then we have found a successor that
+is better than any we have examined so far. Record this by doing the following,
+i. Set Pass-Thresh to NEW-VALUE.
+ii. The best-known path is now from CURRENT to SUCC and
+then on to the appropriate path from SUCC as determined by the recursive call to
+MINIMAX-A-B. So set BEST-PATH to the result of attaching SUCC to the front
+of PATH (RESULT-SUCC).
+(d) If Pass-Thresh (reflecting the current best value) is not better than
+Use-Thresh, then we should stop examining this branch. But both thresholds and
+values have been inverted. So, if Pass-Thresh>= Use Thresh, then return
+immediately with the value
+VALUE= Pass-Thresh
+PATH= BEST-PATH
+5. Return the structure
+VALUE= Pass-Thresh
+PATH= BEST-PATH
+4
+CS 4346- Project #2 Report Format:
+[Please note that it is just a format. For project
+requirements, you must read the project
+description given above].
+Each item below must be described in detail. [Rubric
+points in brackets]
+The project should be completed using the instructions given in the project
+description above, but the format of the report should be as given below. The
+descriptions of each item should be long enough to understand it clearly.
+• Title Page: Write the title, full name of the author, Names of other Team
+members, dates of submission. [1]
+• The Problem Description: Explain the problem for which you have
+developed the Game Playing program. [2]
+• The Domain: Explain the Domain of the problem which is games. [2]
+• Methodologies: Explain in detail the methodology (MinMax -AB) you
+are using. [At least two pages long] [7]
+• Source Code Implementation and Inclusion of a copy in
+the Report: Explain in detail how the source code was developed, and
+the algorithm MinMax- AB was implemented into the source code. Also,
+explain important features you have implemented. [At least one page long]
+[25]
+5
+• Inclusion of a copy of the full source code in the report:
+You must Attach a copy of the source code. It must not be in an attachment.
+[10]
+• A Copy of the program Run and Tabulation of Results:
+Provide a copy of all of the six program runs and provide a copy of the
+developed table of program runs output. [16]
+• Analysis of the program: Explain in detail what features you have
+added or modified and why. [At least one page long] [16]
+• Analysis of the results: Analyze the results of the runs provided in
+the table. Explain in detail the effect on the results of your program
+implementations and modified features. [At least one page long] [16]
+• Conclusion: Explain the conclusion and what you learned from the
+project. [2]
+• Team Members’ Contributions: You must explain in detail the
+contribution of each team member in detail. Team members are expected to
+contribute to the project equally, particularly in source code development.
+[3]
+• References: Add all the references you have consulted in completing the
+project.
+• If Demo is requested from a team and it is not provided
+[-50]
