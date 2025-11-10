@@ -228,15 +228,130 @@ int evaluateEV2(const Board &b, char aiPlayer) {
     return 5 * scoreTwo + scoreOpen;
 }
 
-// EV3 & EV4 placeholders for teammates
+// EV3
 int evaluateEV3(const Board &b, char aiPlayer) {
-    // TODO: teammate can change this
-    return evaluateEV1(b, aiPlayer);
+    char opp = (aiPlayer == PLAYER_X ? PLAYER_O : PLAYER_X);
+
+    // Handle terminal states first
+    char state = checkGameState(b);
+    if (state == aiPlayer) return 100000;
+    if (state == opp)     return -100000;
+    if (state == 'D')     return 0;
+
+    // Start from EV1 (open-lines heuristic)
+    int score = evaluateEV1(b, aiPlayer);
+
+    // Positional weights:
+    // center = 3, corners = 2, edges = 1
+    int positional = 0;
+
+    auto addPositional = [&](int i, int j, int weight) {
+        if (b.cells[i][j] == aiPlayer)      positional += weight;
+        else if (b.cells[i][j] == opp)      positional -= weight;
+    };
+
+    // Center
+    addPositional(1, 1, 3);
+
+    // Corners
+    addPositional(0, 0, 2);
+    addPositional(0, 2, 2);
+    addPositional(2, 0, 2);
+    addPositional(2, 2, 2);
+
+    // Edges
+    addPositional(0, 1, 1);
+    addPositional(1, 0, 1);
+    addPositional(1, 2, 1);
+    addPositional(2, 1, 1);
+
+    return score + positional;
 }
 
+// EV4
 int evaluateEV4(const Board &b, char aiPlayer) {
-    // TODO: teammate can change this
-    return evaluateEV1(b, aiPlayer);
+    char opp = (aiPlayer == PLAYER_X ? PLAYER_O : PLAYER_X);
+
+    // Terminal states
+    char state = checkGameState(b);
+    if (state == aiPlayer) return 100000;
+    if (state == opp)     return -100000;
+    if (state == 'D')     return 0;
+
+    int openForAI  = 0;
+    int openForOpp = 0;
+    int twoForAI   = 0;
+    int twoForOpp  = 0;
+
+    // Rows
+    for (int i = 0; i < 3; ++i) {
+        char a = b.cells[i][0];
+        char c = b.cells[i][1];
+        char d = b.cells[i][2];
+
+        if (isLineOpen(a, c, d, aiPlayer, opp))
+            openForAI++;
+        if (isLineOpen(a, c, d, opp, aiPlayer))
+            openForOpp++;
+
+        twoForAI  += countTwoInRowLine(a, c, d, aiPlayer, opp);
+        twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
+    }
+
+    // Columns
+    for (int j = 0; j < 3; ++j) {
+        char a = b.cells[0][j];
+        char c = b.cells[1][j];
+        char d = b.cells[2][j];
+
+        if (isLineOpen(a, c, d, aiPlayer, opp))
+            openForAI++;
+        if (isLineOpen(a, c, d, opp, aiPlayer))
+            openForOpp++;
+
+        twoForAI  += countTwoInRowLine(a, c, d, aiPlayer, opp);
+        twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
+    }
+
+    // Diagonal 1
+    {
+        char a = b.cells[0][0];
+        char c = b.cells[1][1];
+        char d = b.cells[2][2];
+
+        if (isLineOpen(a, c, d, aiPlayer, opp))
+            openForAI++;
+        if (isLineOpen(a, c, d, opp, aiPlayer))
+            openForOpp++;
+
+        twoForAI  += countTwoInRowLine(a, c, d, aiPlayer, opp);
+        twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
+    }
+
+    // Diagonal 2
+    {
+        char a = b.cells[0][2];
+        char c = b.cells[1][1];
+        char d = b.cells[2][0];
+
+        if (isLineOpen(a, c, d, aiPlayer, opp))
+            openForAI++;
+        if (isLineOpen(a, c, d, opp, aiPlayer))
+            openForOpp++;
+
+        twoForAI  += countTwoInRowLine(a, c, d, aiPlayer, opp);
+        twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
+    }
+
+    int scoreOpen = openForAI - openForOpp;
+
+    // Defensive emphasis:
+    // - reward your 2-in-a-rows
+    // - strongly punish opponent 2-in-a-rows
+    int scoreTwo = (2 * twoForAI) - (4 * twoForOpp);
+
+    // Combine with stronger weight on the defensive part
+    return 2 * scoreOpen + 8 * scoreTwo;
 }
 
 // Dispatcher
