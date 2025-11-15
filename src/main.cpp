@@ -10,7 +10,7 @@ using namespace std;
 const char EMPTY    = ' ';
 const char PLAYER_X = 'X';
 const char PLAYER_O = 'O';
-const int  MAX_DEPTH = 5;   // depth cutoff so eval functions matter
+const int  MAX_DEPTH = 5;   // depth cutoff
 
 // ------------------- Board -----------------------
 
@@ -45,9 +45,8 @@ bool isMovesLeft(const Board &b) {
     return false;
 }
 
-// Returns 'X' if X wins, 'O' if O wins, 'D' for draw, 'N' for no result yet.
 char checkGameState(const Board &b) {
-    // Rows & columns
+    // rows and columns
     for (int i = 0; i < 3; ++i) {
         if (b.cells[i][0] != EMPTY &&
             b.cells[i][0] == b.cells[i][1] &&
@@ -60,7 +59,7 @@ char checkGameState(const Board &b) {
             return b.cells[0][i];
     }
 
-    // Diagonals
+    // diagonals
     if (b.cells[0][0] != EMPTY &&
         b.cells[0][0] == b.cells[1][1] &&
         b.cells[1][1] == b.cells[2][2])
@@ -71,7 +70,7 @@ char checkGameState(const Board &b) {
         b.cells[1][1] == b.cells[2][0])
         return b.cells[0][2];
 
-    // Draw?
+    // draw?
     if (!isMovesLeft(b))
         return 'D';
 
@@ -115,7 +114,7 @@ int evaluateEV1(const Board &b, char aiPlayer) {
     int openForAI  = 0;
     int openForOpp = 0;
 
-    // Rows
+    // rows
     for (int i = 0; i < 3; ++i) {
         if (isLineOpen(b.cells[i][0], b.cells[i][1], b.cells[i][2], aiPlayer, opp))
             openForAI++;
@@ -123,7 +122,7 @@ int evaluateEV1(const Board &b, char aiPlayer) {
             openForOpp++;
     }
 
-    // Columns
+    // columns
     for (int j = 0; j < 3; ++j) {
         if (isLineOpen(b.cells[0][j], b.cells[1][j], b.cells[2][j], aiPlayer, opp))
             openForAI++;
@@ -131,7 +130,7 @@ int evaluateEV1(const Board &b, char aiPlayer) {
             openForOpp++;
     }
 
-    // Diagonals
+    // diagonals
     if (isLineOpen(b.cells[0][0], b.cells[1][1], b.cells[2][2], aiPlayer, opp))
         openForAI++;
     if (isLineOpen(b.cells[0][0], b.cells[1][1], b.cells[2][2], opp, aiPlayer))
@@ -162,7 +161,7 @@ int evaluateEV2(const Board &b, char aiPlayer) {
     int twoForAI   = 0;
     int twoForOpp  = 0;
 
-    // Rows
+    // rows
     for (int i = 0; i < 3; ++i) {
         char a = b.cells[i][0];
         char c = b.cells[i][1];
@@ -177,7 +176,7 @@ int evaluateEV2(const Board &b, char aiPlayer) {
         twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
     }
 
-    // Columns
+    // columns
     for (int j = 0; j < 3; ++j) {
         char a = b.cells[0][j];
         char c = b.cells[1][j];
@@ -192,7 +191,7 @@ int evaluateEV2(const Board &b, char aiPlayer) {
         twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
     }
 
-    // Diagonal 1
+    // diagonal 1
     {
         char a = b.cells[0][0];
         char c = b.cells[1][1];
@@ -207,7 +206,7 @@ int evaluateEV2(const Board &b, char aiPlayer) {
         twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
     }
 
-    // Diagonal 2
+    // diagonal 2
     {
         char a = b.cells[0][2];
         char c = b.cells[1][1];
@@ -232,17 +231,13 @@ int evaluateEV2(const Board &b, char aiPlayer) {
 int evaluateEV3(const Board &b, char aiPlayer) {
     char opp = (aiPlayer == PLAYER_X ? PLAYER_O : PLAYER_X);
 
-    // Handle terminal states first
     char state = checkGameState(b);
     if (state == aiPlayer) return 100000;
     if (state == opp)     return -100000;
     if (state == 'D')     return 0;
 
-    // Start from EV1 (open-lines heuristic)
     int score = evaluateEV1(b, aiPlayer);
 
-    // Positional weights:
-    // center = 3, corners = 2, edges = 1
     int positional = 0;
 
     auto addPositional = [&](int i, int j, int weight) {
@@ -250,16 +245,16 @@ int evaluateEV3(const Board &b, char aiPlayer) {
         else if (b.cells[i][j] == opp)      positional -= weight;
     };
 
-    // Center
+    // center
     addPositional(1, 1, 3);
 
-    // Corners
+    // corners
     addPositional(0, 0, 2);
     addPositional(0, 2, 2);
     addPositional(2, 0, 2);
     addPositional(2, 2, 2);
 
-    // Edges
+    // edges
     addPositional(0, 1, 1);
     addPositional(1, 0, 1);
     addPositional(1, 2, 1);
@@ -272,7 +267,6 @@ int evaluateEV3(const Board &b, char aiPlayer) {
 int evaluateEV4(const Board &b, char aiPlayer) {
     char opp = (aiPlayer == PLAYER_X ? PLAYER_O : PLAYER_X);
 
-    // Terminal states
     char state = checkGameState(b);
     if (state == aiPlayer) return 100000;
     if (state == opp)     return -100000;
@@ -283,7 +277,7 @@ int evaluateEV4(const Board &b, char aiPlayer) {
     int twoForAI   = 0;
     int twoForOpp  = 0;
 
-    // Rows
+    // rows
     for (int i = 0; i < 3; ++i) {
         char a = b.cells[i][0];
         char c = b.cells[i][1];
@@ -298,7 +292,7 @@ int evaluateEV4(const Board &b, char aiPlayer) {
         twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
     }
 
-    // Columns
+    // columns
     for (int j = 0; j < 3; ++j) {
         char a = b.cells[0][j];
         char c = b.cells[1][j];
@@ -313,7 +307,7 @@ int evaluateEV4(const Board &b, char aiPlayer) {
         twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
     }
 
-    // Diagonal 1
+    // diagonal 1
     {
         char a = b.cells[0][0];
         char c = b.cells[1][1];
@@ -328,7 +322,7 @@ int evaluateEV4(const Board &b, char aiPlayer) {
         twoForOpp += countTwoInRowLine(a, c, d, opp, aiPlayer);
     }
 
-    // Diagonal 2
+    // diagonal 2
     {
         char a = b.cells[0][2];
         char c = b.cells[1][1];
@@ -345,16 +339,12 @@ int evaluateEV4(const Board &b, char aiPlayer) {
 
     int scoreOpen = openForAI - openForOpp;
 
-    // Defensive emphasis:
-    // - reward your 2-in-a-rows
-    // - strongly punish opponent 2-in-a-rows
     int scoreTwo = (2 * twoForAI) - (4 * twoForOpp);
 
-    // Combine with stronger weight on the defensive part
     return 2 * scoreOpen + 8 * scoreTwo;
 }
 
-// Dispatcher
+// dispatcher
 int evaluateBoard(const Board &b, char aiPlayer, int evalID) {
     switch (evalID) {
         case 1: return evaluateEV1(b, aiPlayer);
@@ -406,7 +396,7 @@ int minimaxAB(Board &b,
 
                     if (val > best) best = val;
                     if (val > alpha) alpha = val;
-                    if (beta <= alpha) return best; // alpha-beta cutoff
+                    if (beta <= alpha) return best;
                 }
             }
         }
@@ -423,7 +413,7 @@ int minimaxAB(Board &b,
 
                     if (val < best) best = val;
                     if (val < beta) beta = val;
-                    if (beta <= alpha) return best; // alpha-beta cutoff
+                    if (beta <= alpha) return best;
                 }
             }
         }
@@ -446,7 +436,7 @@ Move findBestMove(Board &b, char currentPlayer, int evalID, SearchStats &stats) 
     Move bestMove;
     bestMove.row = -1;
     bestMove.col = -1;
-    bestMove.value = numeric_limits<int>::min(); // root always maximizes
+    bestMove.value = numeric_limits<int>::min();
 
     int alpha = numeric_limits<int>::min();
     int beta  = numeric_limits<int>::max();
